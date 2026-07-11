@@ -90,19 +90,6 @@ For each contract:
 
 The experiment is repeated using the SVI, Heston, and neural network volatility surfaces, allowing their hedging performance to be compared under identical market conditions.
 
-## Repository Structure 
-
-.
-├── data/
-├── notebooks/
-│   ├── data_preprocessing.ipynb
-│   ├── svi_model.ipynb
-│   ├── heston_model.ipynb
-│   ├── nn_model.ipynb
-│   └── hedging.ipynb
-├── report/
-└── README.md
-
 
 ## Results
 
