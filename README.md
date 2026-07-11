@@ -96,7 +96,7 @@ For each contract:
 
 ### Evaluation Metric
 
-Relative Hedging Error = $\frac{\|{Call Payout} - {Option Premium} + \text{Stock Hedging P\&L|}}{\text{Option Premium}}$
+Relative Hedging Error = $\frac{\|{Call Payout} - {Option Premium} + \text{Stock Hedging P&L|}}{\text{Option Premium}}$
 
 - Normalizes the hedging error by the initial option premium.
 - Enables meaningful comparison across contracts with different option prices.
