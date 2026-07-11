@@ -17,8 +17,8 @@ The project uses historical **AAPL and SPY option data** over **21 trading days*
 
 Since the dataset does not contain a separate mid-price or market-price column, the **option close price** is used as the market price proxy for calibration and hedging calculations. The remaining OHLC and volume fields are kept in the raw dataset but are not used directly in the final modelling pipeline.
 
-The AAPL data contains ~ 7000 option contacts (approximately 50% calls and %50 puts)
-The SPY data contains ~ 60,000 option contracts (also approximately 50% calls and %50 puts)
+- The AAPL data contains ~ 7000 option contacts (approximately 50% calls and %50 puts)
+- The SPY data contains ~ 60,000 option contracts (also approximately 50% calls and %50 puts)
 
 
 ### Preprocessing
@@ -96,7 +96,7 @@ For each contract:
 
 ### Evaluation Metric
 
-Relative Hedging Error = $\frac{\|{Call Payout} - {Option Premium} + \text{Stock Hedging } P&L|}}{\text{Option Premium}}$
+$$\text{Relative Hedging Error} = \frac{|\text{Call Payout} - \text{Option Premium} + \text{Stock Hedging PnL}|}{\text{Option Premium}}$$
 
 - Normalizes the hedging error by the initial option premium.
 - Enables meaningful comparison across contracts with different option prices.
