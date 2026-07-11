@@ -17,6 +17,10 @@ The project uses historical **AAPL and SPY option data** over **21 trading days*
 
 Since the dataset does not contain a separate mid-price or market-price column, the **option close price** is used as the market price proxy for calibration and hedging calculations. The remaining OHLC and volume fields are kept in the raw dataset but are not used directly in the final modelling pipeline.
 
+The AAPL data contains ~ 7000 option contacts (approximately 50% calls and %50 puts)
+The SPY data contains ~ 60,000 option contracts (also approximately 50% calls and %50 puts)
+
+
 ### Preprocessing
 
 The data were prepared for volatility surface construction by:
@@ -31,13 +35,15 @@ The data were prepared for volatility surface construction by:
 
 ## Models
 
-This project compares three fundamentally different approaches to implied volatility surface construction.
+This project implements three fundamentally different approaches to implied volatility surface construction and compares them against the BS sticky model as baseline: 
 
 | Model | Approach | Strengths | Limitations |
 |:------|:---------|:----------|:------------|
 | **SVI** | Parametric volatility surface | Fast calibration, excellent market fit | Requires calibration for each trading day |
 | **Heston** | Stochastic volatility model | Financially interpretable, realistic volatility dynamics | Computationally expensive calibration, weaker surface fit |
-| **Neural Network** | Data-driven regression | Learns complex nonlinear relationships, fast inference | Requires training data, weaker hedging performance |
+| **Neural Network** | Data-driven regression | Learns complex nonlinear relationships, fast inference | Requires training data |
+
+For the BS sticky model, we assume that the volatility is fixed during the hedging period and it is the implied volatility of the option at the first of trading that we are trading. 
 
 ### SVI (Stochastic Volatility Inspired)
 
@@ -49,7 +55,7 @@ A stochastic volatility model in which both the asset price and its variance evo
 
 ### Neural Network
 
-A feedforward neural network trained to predict implied volatility directly from option's strike and time to maturity. Once trained, the model provides fast volatility surface predictions without repeated numerical optimization.
+A feedforward neural network trained to predict total implied variance directly from option's log moneyness and time to maturity, then implied volatility was derived. Once trained, the model provides fast volatility surface predictions without repeated numerical optimization.
 
 ## Workflow
 
@@ -79,7 +85,7 @@ flowchart LR
 
 ## Dynamic Hedging Experiment
 
-To evaluate each volatility surface model in practice, we simulate dynamic delta hedging for ** ~ 15 European call option contracts** with approximately one month to maturity.
+To evaluate each volatility surface model in practice, we simulate dynamic delta hedging for ** ~ 15 European call option contracts** with approximately one month to maturity and near ATM strike.
 
 For each contract:
 
@@ -88,32 +94,75 @@ For each contract:
 - The hedge portfolio is rebalanced daily using the updated delta.
 - At expiration, the hedging error is computed.
 
-The experiment is repeated using the SVI, Heston, and neural network volatility surfaces, allowing their hedging performance to be compared under identical market conditions.
+### Evaluation Metric
+
+Relative Hedging Error = $\frac{\|{Call Payout} - {Option Premium} + \text{Stock Hedging P\&L|}}{\text{Option Premium}}$
+
+- Normalizes the hedging error by the initial option premium.
+- Enables meaningful comparison across contracts with different option prices.
+- Report the mean and standard deviation of the relative hedging errors over all hedging experiments.
 
 
 ## Results
 
-### Surface fit
+### Surface fit (AAPL)
 | Model | IV RMSE  | Vega-Weighted RMSE  | 
 |:------|----------:|---------------------:|
 | **SVI** | **0.063** | **0.038** |
 | **Neural Network** | **0.065** | **0.032** |
 | Heston | 0.18 | 0.13 |
 
-### Hedging Performance
 
-| Model | MAE  | RMSE  | Mean Relative Error  |
+
+### Hedging Performance (AAPL)
+
+| Model | MAE  | Mean Relative Error   | Std Relative Error  |
 |:------|------:|-------:|----------------------:|
-| **SVI** | **1.23** | **1.62** | **11.4%** |
-| Heston | 2.89 | 3.20 | 44.3% |
-| Neural Network | 4.04 | 5.08 | 78.4% |
+| **SVI** | **1.23** | **0.11%** | **0.09** |
+| Heston | 2.89 | 0.44 | 0.45 |
+| Neural Network | 4.04 | 0.15 | 0.09 |
+|Baseline BS | 0.86 | 0.16 | 0.19
+
+### Surface fit (SPY)
+
+| Model | IV RMSE  | Vega-Weighted RMSE  | 
+|:------|----------:|---------------------:|
+| **SVI** | **0.03** | **0.016** |
+| **Neural Network** | **0.068** | **0.03** |
+| Heston | - | - |
+
+
+### Hedging Performance (SPY)
+
+| Model | MAE  | Mean Relative Error   | Std Relative Error  |
+|:------|------:|-------:|----------------------:|
+| SVI | 5.8 | 0.36 | 0.1 |
+| **Neural Network** | **4.59** | **0.27** | **0.1** |
+| Heston | - | - | - |
+|Baseline BS | 4.9 | 0.3 | 0.08
 
 ## Key Results
 
-- SVI achieved the best overall hedging performance.
-- The neural network produced the most accurate volatility surface fit but the weakest hedge.
-- Heston calibrated less accurately than SVI and the neural network, yet outperformed the neural network in dynamic hedging.
-- Calibration accuracy alone was not a reliable indicator of hedging performance.
+AAPL
+- SVI achieved the best overall performance, providing both excellent volatility surface calibration and the lowest relative hedging errors.
+- NN performed competitively, exhibiting lower variability in hedging errors than the Black–Scholes baseline.
+- SVI and NN outperformed the Black–Scholes baseline in terms of relative hedging error.
+- BS baseline remained surprisingly competitive, despite its constant volatility assumption.
+- The Heston model produced the weakest calibration and hedging performance.
+
+SPY
+- NN achieved the best hedging performance.
+- The substantially larger SPY dataset (approximately 10× the size of AAPL) significantly improved the neural network's performance.
+- SVI produced an excellent volatility surface fit, but this did not translate into the best hedging performance.
+- The Heston model was not evaluated due to the high computational cost of repeated calibration.
+
+Overall Conclusions
+- Calibration accuracy alone is not a reliable indicator of hedging performance.
+- BS baseline remained a strong benchmark, despite assuming constant volatility.
+- Machine learning methods benefit substantially from larger training datasets.
+- SVI proved robust on the smaller AAPL dataset, whereas the neural network excelled on the larger SPY dataset.
+
+Overall, the results suggest that there is no universally best volatility surface model. Model performance depends not only on the modelling approach but also on the amount of available market data. Classical parametric models such as SVI are robust on smaller datasets, while data-driven neural networks become increasingly competitive as more training data become available.
 
 ## Future Work
 - SSVI
