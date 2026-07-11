@@ -2,11 +2,11 @@
 
 ## Overview
 
-This project compares three approaches to implied volatility surface construction—SVI, the Heston stochastic volatility model, and a neural network—using real AAPL option data. Rather than evaluating models solely by calibration accuracy, the project assesses their practical value through dynamic delta hedging, demonstrating how different volatility surfaces influence hedging performance.
+This project compares three approaches to implied volatility surface construction—SVI, the Heston stochastic volatility model, and a neural network—using real AAPL and SPY option data. Rather than evaluating models solely by calibration accuracy, the project assesses their practical value through dynamic delta hedging, demonstrating how different volatility surfaces influence hedging performance.
 
 ## Data
 
-The project uses historical **AAPL option data** over **21 trading days**. The raw dataset contains option-level information including:
+The project uses historical **AAPL and SPY option data** over **21 trading days**. The raw dataset contains option-level information including:
 
 - Underlying asset price
 - Strike price
@@ -79,7 +79,7 @@ flowchart LR
 
 ## Dynamic Hedging Experiment
 
-To evaluate each volatility surface model in practice, we simulate dynamic delta hedging for **11 European call option contracts** with approximately one month to maturity.
+To evaluate each volatility surface model in practice, we simulate dynamic delta hedging for ** ~ 15 European call option contracts** with approximately one month to maturity.
 
 For each contract:
 
