@@ -30,7 +30,7 @@ The data were prepared for volatility surface construction by:
 - Using the option close price as the market price proxy
 - Checking that each trading day and maturity slice contains enough strikes for reliable SVI calibration
 - Filtering and organizing the data into daily option surfaces
-- Selecting a one-month European call option for the dynamic hedging experiment
+- Selecting a set one-month European call options for the dynamic hedging experiment
 
 
 ## Models
@@ -43,7 +43,7 @@ This project implements three fundamentally different approaches to implied vola
 | **Heston** | Stochastic volatility model | Financially interpretable, realistic volatility dynamics | Computationally expensive calibration, weaker surface fit |
 | **Neural Network** | Data-driven regression | Learns complex nonlinear relationships, fast inference | Requires training data |
 
-For the BS sticky model, we assume that the volatility is fixed during the hedging period and it is the implied volatility of the option at the first of trading that we are trading. 
+For the BS sticky model, we assume that the implied volatility is equal to the market implied volatility of the option on the first trading day and remains fixed throughout the hedging period.
 
 ### SVI (Stochastic Volatility Inspired)
 
