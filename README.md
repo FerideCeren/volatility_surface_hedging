@@ -118,10 +118,10 @@ $$\text{Relative Hedging Error} = \frac{|\text{Call Payout} - \text{Option Premi
 
 | Model | MAE  | Mean Relative Error   | Std Relative Error  |
 |:------|------:|-------:|----------------------:|
-| **SVI** | **1.23** | **0.11%** | **0.09** |
-| Heston | 2.89 | 0.44 | 0.45 |
-| Neural Network | 4.04 | 0.15 | 0.09 |
-|Baseline BS | 0.86 | 0.16 | 0.19
+| **SVI** | **1.23** | **0.113** | **0.09** |
+| Heston | 2.89 | 0.44 | 0.442 |
+| Neural Network | 4.04 | 0.154 | 0.09 |
+|Baseline BS | 0.86 | 0.155 | 0.19
 
 ### Surface fit (SPY)
 
@@ -136,10 +136,10 @@ $$\text{Relative Hedging Error} = \frac{|\text{Call Payout} - \text{Option Premi
 
 | Model | MAE  | Mean Relative Error   | Std Relative Error  |
 |:------|------:|-------:|----------------------:|
-| SVI | 5.8 | 0.36 | 0.1 |
-| **Neural Network** | **4.59** | **0.27** | **0.1** |
+| SVI | 5.8 | 0.357 | 0.1 |
+| **Neural Network** | **4.59** | **0.271** | **0.1** |
 | Heston | - | - | - |
-|Baseline BS | 4.9 | 0.3 | 0.08
+|Baseline BS | 4.9 | 0.296 | 0.08
 
 ## Key Results
 
